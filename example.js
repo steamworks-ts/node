@@ -8,8 +8,9 @@ function sleep(sleepInMs) {
     setTimeout(prom.resolve, sleepInMs);
     return prom.promise;
 }
-sleep(1000).then(() => {
-    let session = client.steamuser.getAuthTicketForWebApi("beasthunter");
+sleep(1000).then(async () => {
+    let session = await client.steamuser.getAuthTicketForWebApi("");
+    console.log('Session', session.hex);
 });
 console.log(client.steamuser);
 async function main() {

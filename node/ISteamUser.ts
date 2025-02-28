@@ -18,6 +18,28 @@ const GetTicketForWebApiResponse_t = {
 }
 
 
+const promises = {
+    getAuthTicketForWebApi: [] as PromiseWithResolvers<GetAuthTicketForWebApiResponse>[]
+};
+
+
+class GetAuthTicketForWebApiResponse {
+    #buffer: Buffer;
+    constructor(data: nodeType) {
+        this.#buffer = Uint8Array.prototype.slice.call(data.ticket, 0, data.length);
+    }
+
+    get bytes() {
+        return Buffer.from(this.#buffer)
+    }
+
+    get hex() {
+        return this.#buffer.toString('hex');
+    }
+
+
+}
+
 export class ISteamUser {
     #client: SteamAPI;
     #self: JsExternal;
@@ -26,17 +48,23 @@ export class ISteamUser {
         this.#self = _binding.SteamAPI_SteamUser_v023([]);
 
         registerHandler(function TicketHandler(data: nodeType) {
-            console.log(data);
-            console.log(data.ticket.slice(0, data.length).toString('hex'));
-
+            promises.getAuthTicketForWebApi.forEach(p => p.resolve(new GetAuthTicketForWebApiResponse(data)));
+            promises.getAuthTicketForWebApi = [];
         })
 
     }
 
 
-    getAuthTicketForWebApi(identity: string|null) {
-        console.log(_binding.SteamAPI_ISteamUser_GetAuthTicketForWebApi([this.#self, identity]));
+    getAuthTicketForWebApi(identity: string): Promise<GetAuthTicketForWebApiResponse> {
+        let promise = Promise.withResolvers<GetAuthTicketForWebApiResponse>();
+        const handle = _binding.SteamAPI_ISteamUser_GetAuthTicketForWebApi([this.#self, identity]);
+        if(handle === 0) {
+            promise.reject();
+        } else {
+            promises.getAuthTicketForWebApi.push(promise);
+        }
 
+        return promise.promise;
     }
 
     getSteamId() {

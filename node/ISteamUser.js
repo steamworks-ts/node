@@ -13,6 +13,21 @@ const GetTicketForWebApiResponse_t = {
         ffiTypeTag: ffi_rs_1.FFITypeTag.StackArray
     }),
 };
+const promises = {
+    getAuthTicketForWebApi: []
+};
+class GetAuthTicketForWebApiResponse {
+    #buffer;
+    constructor(data) {
+        this.#buffer = Uint8Array.prototype.slice.call(data.ticket, 0, data.length);
+    }
+    get bytes() {
+        return Buffer.from(this.#buffer);
+    }
+    get hex() {
+        return this.#buffer.toString('hex');
+    }
+}
 class ISteamUser {
     #client;
     #self;
@@ -20,12 +35,20 @@ class ISteamUser {
         this.#client = client;
         this.#self = _binding.SteamAPI_SteamUser_v023([]);
         (0, GetTicketForWebApi_1.registerHandler)(function TicketHandler(data) {
-            console.log(data);
-            console.log(data.ticket.slice(0, data.length).toString('hex'));
+            promises.getAuthTicketForWebApi.forEach(p => p.resolve(new GetAuthTicketForWebApiResponse(data)));
+            promises.getAuthTicketForWebApi = [];
         });
     }
     getAuthTicketForWebApi(identity) {
-        console.log(_binding.SteamAPI_ISteamUser_GetAuthTicketForWebApi([this.#self, identity]));
+        let promise = Promise.withResolvers();
+        const handle = _binding.SteamAPI_ISteamUser_GetAuthTicketForWebApi([this.#self, identity]);
+        if (handle === 0) {
+            promise.reject();
+        }
+        else {
+            promises.getAuthTicketForWebApi.push(promise);
+        }
+        return promise.promise;
     }
     getSteamId() {
         return _binding.SteamAPI_ISteamUser_GetSteamID([this.#self]);
