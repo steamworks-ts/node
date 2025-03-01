@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "electron": "^34.3.0",
     "ffi-rs": "^1.2.6"
   },
   "devDependencies": {

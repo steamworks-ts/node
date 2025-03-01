@@ -42,4 +42,4 @@ const _bindings = define(
             paramsType: []
         },
 
-})
+    })

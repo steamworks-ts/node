@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ES2024",
-    "moduleResolution": "nodenext"
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "types",
+    "declarationMap": true,
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.js"],
+  "exclude": ["node_modules", "types", "steam_bin", "node", "**/*.ts", "**/*.d.ts"]
 }
