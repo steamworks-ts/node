@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const node_1 = require("./node");
+const node_1 = require("./index");
 let client = node_1.SteamAPI.init_app(480);
 //('mine');
 function sleep(sleepInMs) {
