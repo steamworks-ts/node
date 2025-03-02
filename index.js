@@ -1,27 +1,28 @@
-import bindings from "./bindings.js";
+import bindings from "./bindings";
 import {Client} from "./classes/Client.js";
 
-class SteamWorks {
-    static Client = Client;
+const steamworks = {
+
+    Client: Client,
 
     /**
      *
      * @param {number|undefined} app_id The appid of your steam app. If appid is omitted, steam will try to find a steam_appid.txt or get it from the environment variable SteamAppId
      */
-    static init(app_id) {
+    init(app_id) {
         if(typeof app_id !== "number") {
             process.env['SteamAppId'] = app_id.toString()
         }
-        bindings.SteamAPI_InitSafe();
+        bindings.SteamAPI_InitSafe([]);
         startRunCallbacks();
         return new Client();
-    }
+    },
 
     /**
      *
      * @param {number} interval_ms Interval in ms which is used to call SteamAPI_RunCallbacks. Must be between 1 and 1000
      */
-    static setRunCallbacksInterval(interval_ms) {
+    setRunCallbacksInterval(interval_ms) {
         if(typeof interval_ms !== "number") {
             throw new TypeError('Interval has to be a number representing the delay in milliseconds')
         }
@@ -33,13 +34,13 @@ class SteamWorks {
                 startRunCallbacks();
             }
         }
-    }
+    },
 
     /**
      * Enables GPU to allow steam to hook into render process to inject steamoverlay
      * @param {boolean} disableEachFrameInvalidation
      */
-    static async electronEnableSteamOverlay(disableEachFrameInvalidation = false) {
+    electronEnableSteamOverlay: async (disableEachFrameInvalidation = false) => {
         /**
          *
          */
@@ -90,4 +91,4 @@ function startRunCallbacks() {
     );
 }
 
-export default SteamWorks;
+export default steamworks;

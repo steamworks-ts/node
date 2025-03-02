@@ -44,7 +44,32 @@ const _bindings = define(
             retType: DataType.Boolean,
             paramsType: []
         },
+        "SteamAPI_RegisterCallback": {
+            library: "steamworks",
+            retType: DataType.Void,
+            paramsType: [DataType.External, DataType.I32]
+        },
+        "SteamAPI_RegisterCallResult": {
+            library: "steamworks",
+            retType: DataType.Void,
+            paramsType: [DataType.External, DataType.I32]
+        },
+        "SteamAPI_ISteamUser_GetAuthTicketForWebApi": {
+            paramsType: [DataType.External, DataType.String],
+            retType: DataType.I64,
+            library: "steamworks"
+        },
+        "SteamAPI_ISteamUser_GetSteamID": {
+            paramsType: [DataType.External],
+            retType: DataType.I64,
+            library: "steamworks"
+        },
 
+        "SteamAPI_SteamUser_v023": {
+            paramsType: [],
+            retType: DataType.External,
+            library: "steamworks"
+        }
     })
 
 
