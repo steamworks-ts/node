@@ -12,7 +12,7 @@ class SteamWorks {
         if(typeof app_id !== "number") {
             process.env['SteamAppId'] = app_id.toString()
         }
-        bindings.init();
+        bindings.SteamAPI_InitSafe();
         startRunCallbacks();
         return new Client();
     }
