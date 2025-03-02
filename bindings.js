@@ -1,4 +1,4 @@
-import {open, define} from "ffi-rs";
+import {open, define, DataType} from "ffi-rs";
 const { platform, arch } = process;
 
 
