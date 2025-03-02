@@ -1,4 +1,4 @@
-import bindings from "./bindings";
+import bindings from "./bindings.js";
 import {Client} from "./classes/Client.js";
 
 class SteamWorks {
