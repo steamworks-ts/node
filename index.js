@@ -1,6 +1,10 @@
 import bindings from "./bindings";
+import {Client} from "./classes/Client.js";
 
 const steamworks = {
+
+    Client: Client,
+
     /**
      *
      * @param {number|undefined} app_id The appid of your steam app. If appid is omitted, steam will try to find a steam_appid.txt or get it from the environment variable SteamAppId
