@@ -1,9 +1,8 @@
 import bindings from "./bindings";
 import {Client} from "./classes/Client.js";
 
-const steamworks = {
-
-    Client: Client,
+class SteamWorks {
+    static Client = Client;
 
     /**
      *
@@ -15,8 +14,8 @@ const steamworks = {
         }
         bindings.init();
         startRunCallbacks();
-        return new SteamClient();
-    },
+        return new Client();
+    }
 
     /**
      *
@@ -34,13 +33,13 @@ const steamworks = {
                 startRunCallbacks();
             }
         }
-    },
+    }
 
     /**
      * Enables GPU to allow steam to hook into render process to inject steamoverlay
      * @param {boolean} disableEachFrameInvalidation
      */
-    electronEnableSteamOverlay: async (disableEachFrameInvalidation = false) => {
+    async electronEnableSteamOverlay(disableEachFrameInvalidation = false) {
         /**
          *
          */
@@ -91,4 +90,4 @@ function startRunCallbacks() {
     );
 }
 
-export default steamworks;
+export default SteamWorks;
