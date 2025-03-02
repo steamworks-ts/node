@@ -1,13 +1,18 @@
 {
-  "name": "@steamworks-ts/node",
+  "name": "@steamworks-ffi/node",
   "version": "1.0.0",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "description": "",
+
+
+
+
   "dependencies": {
     "electron": "^34.3.0",
     "ffi-rs": "^1.2.6"

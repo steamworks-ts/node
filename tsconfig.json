@@ -5,6 +5,7 @@
     "emitDeclarationOnly": true,
     "outDir": "types",
     "declarationMap": true,
+    "esModuleInterop": true
   },
   "include": ["**/*.js"],
   "exclude": ["./node_modules", "./types", "./steam_bin", "./node", "**/*.ts", "**/*.d.ts", "example.ts"]
