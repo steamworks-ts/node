@@ -29,7 +29,7 @@ console.log('loading', binding);
 
 open({
     library: "steamworks",
-    path: __dirname + "/steam_bin/" + binding[0]
+    path: import.meta.dirname + "/steam_bin/" + binding[0]
 });
 
 const _bindings = define(
