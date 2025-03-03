@@ -26,10 +26,10 @@ if(typeof mapping[platform][arch] === 'undefined') {
 }
 const binding = mapping[platform][arch];
 console.log('loading', binding);
-
+const __dirname = (new URL(import.meta.url)).pathname.split('/').slice(0, -1).join('/')
 open({
     library: "steamworks",
-    path: import.meta.dirname + "/steam_bin/" + binding[0]
+    path: __dirname + "/steam_bin/" + binding[0]
 });
 
 const _bindings = define(
@@ -53,7 +53,8 @@ const _bindings = define(
         "SteamAPI_RegisterCallResult": {
             library: "steamworks",
             retType: DataType.Void,
-            paramsType: [DataType.External, DataType.I32]
+            paramsType: [DataType.External, DataType.I32],
+            runInNewThread: true
         },
         "SteamAPI_ISteamUser_GetAuthTicketForWebApi": {
             paramsType: [DataType.External, DataType.String],
