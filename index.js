@@ -1,20 +1,43 @@
-import bindings from "./bindings";
+import bindings from "./bindings.js";
 import {Client} from "./classes/Client.js";
+
+
+if(typeof Promise.withResolvers === 'undefined') {
+    console.log('injecting Promise.withResolvers polyfill')
+    Promise.withResolvers = function () {
+        let resolve, reject
+        const promise = new Promise((res, rej) => {
+            resolve = res
+            reject = rej
+        })
+        return { promise, resolve, reject }
+    }
+}
 
 const steamworks = {
 
-    Client: Client,
+    Client,
 
     /**
      *
      * @param {number|undefined} app_id The appid of your steam app. If appid is omitted, steam will try to find a steam_appid.txt or get it from the environment variable SteamAppId
      */
     init(app_id) {
-        if(typeof app_id !== "number") {
+        if(typeof app_id !== "undefined") {
+            app_id = parseInt(app_id);
+            if(isNaN(app_id)) {
+                throw new Error('AppId is NaN');
+            }
             process.env['SteamAppId'] = app_id.toString()
         }
-        bindings.SteamAPI_InitSafe([]);
+        if(!bindings.SteamAPI_InitSafe([])) {
+            throw new Error('SteamAPI could not be initiated');
+        }
         startRunCallbacks();
+
+
+
+
         return new Client();
     },
 
@@ -40,33 +63,35 @@ const steamworks = {
      * Enables GPU to allow steam to hook into render process to inject steamoverlay
      * @param {boolean} disableEachFrameInvalidation
      */
-    electronEnableSteamOverlay: async (disableEachFrameInvalidation = false) => {
+    electronEnableSteamOverlay: (disableEachFrameInvalidation = false) => {
         /**
          *
          */
-        const electron = (await import('electron'));
-        if (!electron) {
-            throw new Error('Electron module not found')
-        }
-
-        electron.app.commandLine.appendSwitch('in-process-gpu')
-        electron.app.commandLine.appendSwitch('disable-direct-composition')
-
-        if (!disableEachFrameInvalidation) {
-            /** @param {electron.BrowserWindow} browserWindow */
-            const attachFrameInvalidator = (browserWindow) => {
-                browserWindow.steamworksRepaintInterval = setInterval(() => {
-                    if (browserWindow.isDestroyed()) {
-                        clearInterval(browserWindow.steamworksRepaintInterval)
-                    } else if (!browserWindow.webContents.isPainting()) {
-                        browserWindow.webContents.invalidate()
-                    }
-                }, 1000 / 60)
+        import('electron').then((electron) => {
+            if (!electron) {
+                throw new Error('Electron module not found')
             }
 
-            electron.BrowserWindow.getAllWindows().forEach(attachFrameInvalidator)
-            electron.app.on('browser-window-created', (_, bw) => attachFrameInvalidator(bw))
-        }
+            electron.app.commandLine.appendSwitch('in-process-gpu')
+            electron.app.commandLine.appendSwitch('disable-direct-composition')
+
+            if (!disableEachFrameInvalidation) {
+                /** @param {electron.BrowserWindow} browserWindow */
+                const attachFrameInvalidator = (browserWindow) => {
+                    browserWindow.steamworksRepaintInterval = setInterval(() => {
+                        if (browserWindow.isDestroyed()) {
+                            clearInterval(browserWindow.steamworksRepaintInterval)
+                        } else if (!browserWindow.webContents.isPainting()) {
+                            browserWindow.webContents.invalidate()
+                        }
+                    }, 1000 / 60)
+                }
+
+                electron.BrowserWindow.getAllWindows().forEach(attachFrameInvalidator)
+                electron.app.on('browser-window-created', (_, bw) => attachFrameInvalidator(bw))
+            }
+        })
+
     }
 }
 /**
@@ -77,18 +102,30 @@ const steamworks = {
 let _callbacksInterval = null;
 /**
  *
- * @type {number}
+ * @type {number}‚
  * @private
  */
-let _callbackIntervalDelay = 33;
+let _callbackIntervalDelay = 100;
 
 
 function startRunCallbacks() {
     clearInterval(_callbacksInterval);
     _callbacksInterval = setInterval(
-        () => bindings.SteamAPI_RunCallbacks([]),
+        () => {
+            bindings.SteamAPI_RunCallbacks([]);
+        },
         _callbackIntervalDelay
     );
 }
 
+
+function sleep(i) {
+    const p = Promise.withResolvers();
+    setTimeout(p.resolve, i);
+    return p.promise;
+}
+
+
+
 export default steamworks;
+console.log(process.versions.node);

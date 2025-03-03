@@ -11,7 +11,7 @@ declare namespace steamworks {
      * @param {number} interval_ms Interval in ms which is used to call SteamAPI_RunCallbacks. Must be between 1 and 1000
      */
     export function setRunCallbacksInterval(interval_ms: number): void;
-    export function electronEnableSteamOverlay(disableEachFrameInvalidation?: boolean): Promise<void>;
+    export function electronEnableSteamOverlay(disableEachFrameInvalidation?: boolean): void;
 }
 import { Client } from "./classes/Client.js";
 //# sourceMappingURL=index.d.ts.map

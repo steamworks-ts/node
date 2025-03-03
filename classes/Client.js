@@ -1,8 +1,8 @@
 import {ClientAuth} from "./ClientAuth.js";
 
+
 export class Client {
-    constructor() {
-    }
+
 
     /**
      *

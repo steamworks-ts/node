@@ -42,7 +42,8 @@ const _bindings = define(
         "SteamAPI_RunCallbacks": {
             library: "steamworks",
             retType: DataType.Boolean,
-            paramsType: []
+            paramsType: [],
+            runInNewThread: true
         },
         "SteamAPI_RegisterCallback": {
             library: "steamworks",
